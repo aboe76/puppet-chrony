@@ -103,8 +103,8 @@
 #   Override the default package provider with a specific backend to use when installing the chrony package.
 #   Also see [`package_source`](#package_source).
 # @param peers
-#   This selects the servers to use for NTP peers (symmetric association).
-#   It is an array of servers.
+#   This selects the servers to use for NTP peers. It can be an array of servers
+#   or a hash of servers to their respective options.
 # @param servers
 #   This selects the servers to use for NTP servers.  It can be an array of servers
 #   or a hash of servers to their respective options.
@@ -113,9 +113,9 @@
 #   Similar to [`server`](#server), it can be an array of pools or a hash of pools to their respective options.
 #   See [pool](https://chrony.tuxfamily.org/doc/3.4/chrony.conf.html#pool)
 # @param refclocks
-#   This should be a Hash of hardware reference clock drivers to use.  They hash
-#   can either list a single list of options for the driver, or any array of
-#   multiple options if the same driver is used for multiple hardware clocks.
+#   This selects reference clock drivers to use. It can be an array of drivers, or a hash
+#   of drivers. The hash can either list a single list of options for the driver, or any
+#   array of multiple options if the same driver is used for multiple hardware clocks.
 #
 #   Example:
 #   ```puppet
@@ -182,7 +182,7 @@ class chrony (
   Array[String] $bindcmdaddress                                    = ['127.0.0.1', '::1'],
   Array[String] $cmdacl                                            = $chrony::params::cmdacl,
   Optional[Stdlib::Port] $cmdport                                  = undef,
-  $commandkey                                                      = 0,
+  Integer $commandkey                                              = 0,
   Stdlib::Unixpath $config                                         = $chrony::params::config,
   String[1] $config_template                                       = 'chrony/chrony.conf.epp',
   Stdlib::Unixpath $config_keys                                    = $chrony::params::config_keys,
@@ -200,8 +200,8 @@ class chrony (
   String[1] $package_name                                          = $chrony::params::package_name,
   Optional[String] $package_source                                 = undef,
   Optional[String] $package_provider                               = undef,
-  $refclocks                                                       = [],
-  $peers                                                           = [],
+  Variant[Hash,Array[Variant[Hash,String[1]]]] $refclocks          = [],
+  Variant[Hash,Array[Stdlib::Host]] $peers                         = [],
   Variant[Hash,Array[Stdlib::Host]] $servers                       = {
     '0.pool.ntp.org' => ['iburst'],
     '1.pool.ntp.org' => ['iburst'],
@@ -211,7 +211,7 @@ class chrony (
   Variant[Hash,Array[Stdlib::Fqdn]] $pools                         = {},
   Numeric $makestep_seconds                                        = 10,
   Integer $makestep_updates                                        = 3,
-  $queryhosts                                                      = [],
+  Array[String[1]] $queryhosts                                     = [],
   Optional[String[1]] $mailonchange                                = undef,
   Float $threshold                                                 = 0.5,
   Boolean $lock_all                                                = false,

@@ -137,7 +137,7 @@ Default value: ``undef``
 
 ##### `commandkey`
 
-Data type: `Any`
+Data type: `Integer`
 
 This sets the key ID used by chronyc to authenticate to chronyd.
 
@@ -297,10 +297,10 @@ Default value: ``undef``
 
 ##### `peers`
 
-Data type: `Any`
+Data type: `Variant[Hash,Array[Stdlib::Host]]`
 
-This selects the servers to use for NTP peers (symmetric association).
-It is an array of servers.
+This selects the servers to use for NTP peers. It can be an array of servers
+or a hash of servers to their respective options.
 
 Default value: `[]`
 
@@ -330,11 +330,11 @@ Default value: `{}`
 
 ##### `refclocks`
 
-Data type: `Any`
+Data type: `Variant[Hash,Array[Variant[Hash,String[1]]]]`
 
-This should be a Hash of hardware reference clock drivers to use.  They hash
-can either list a single list of options for the driver, or any array of
-multiple options if the same driver is used for multiple hardware clocks.
+This selects reference clock drivers to use. It can be an array of drivers, or a hash
+of drivers. The hash can either list a single list of options for the driver, or any
+array of multiple options if the same driver is used for multiple hardware clocks.
 
 Example:
 ```puppet
@@ -369,7 +369,7 @@ Default value: `3`
 
 ##### `queryhosts`
 
-Data type: `Any`
+Data type: `Array[String[1]]`
 
 This adds the networks, hosts that are allowed to query the daemon.
 
